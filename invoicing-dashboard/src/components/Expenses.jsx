@@ -1,9 +1,22 @@
+import React, { useState, useEffect } from "react";
+import { createServer } from "miragejs";
+
 import CardExpense from "./subcomponents/CardExpense";
 import money from "../assets/money-icon.png";
 import debit from "../assets/debit.png";
 import kredit from "../assets/kredit.png";
 
 const Expenses = () => {
+  let [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/expenses")
+      .then((res) => res.json())
+      .then((json) => {
+        setExpenses(json.expenses);
+      });
+  }, []);
+
   return (
     <div className="all-expens shadow-sm rounded-lg border m-6 bg-white">
       <div className="header flex justify-between items-center m-3">
@@ -19,42 +32,9 @@ const Expenses = () => {
       </div>
 
       <div className="content grid grid-cols-3 gap-3 m-3">
-        <CardExpense
-          bgColor="bg-[#4EB7F2]"
-          chevron="text-white"
-          contentTextColor="text-white"
-          dateTextColor="text-slate-100"
-          amountTextColor="text-white"
-          content="Balance"
-          date="20 April 2022"
-          amount="$20,129"
-          icon={money}
-          altIcon="money-icon"
-        />
-        <CardExpense
-          bgColor="bg-white"
-          chevron="text-white"
-          contentTextColor="text-[#064061]"
-          dateTextColor="text-gray-400"
-          amountTextColor="text-[#4EB7F2]"
-          content="Income"
-          date="15 February 2023"
-          amount="$20,129"
-          icon={debit}
-          altIcon="debit-icon"
-        />
-        <CardExpense
-          bgColor="bg-white"
-          chevron="text-white"
-          contentTextColor="text-[#064061]"
-          dateTextColor="text-gray-400"
-          amountTextColor="text-[#4EB7F2]"
-          content="Expenses"
-          date="24 Juli 2023"
-          amount="$20,129"
-          icon={kredit}
-          altIcon="kredit-icon"
-        />
+        {expenses.map((exps) => (
+          <CardExpense bgColor="bg-[#4EB7F2]" chevron="text-white" contentTextColor="text-white" dateTextColor="text-slate-100" amountTextColor="text-white" content={exps.content} date={exps.date} amount={exps.amount} icon={exps.icon} />
+        ))}
       </div>
     </div>
   );
